@@ -9,6 +9,17 @@ this project.
 The implementation is based on the original source code for Raspistill, but with a significant
 re-write. See README.BROADCOM for the original copyright notice.
 
+Building the shared library
+---------------------------
+
+Clone the source to a directory on your Pi.
+
+Execute the "pi.sh" command to produce a "picam.so" shared library that your Java picam application
+can then use.
+
+In the future, a pre-built library will likely be included in the picam distribution, but for now
+it is easy enough to build yourself.
+
 TODO
 ----
 
