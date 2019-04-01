@@ -175,11 +175,7 @@ JNIEXPORT jboolean JNICALL Java_uk_co_caprica_picam_Camera_capture(JNIEnv *env, 
     // FIXME 1. exception is not being raised on Java side
     //       2. we are not stopping the callback from running, so there's a potential race of the callback going back into pictureData after the timeout
     if (!captureSuccess) {
-        printf("Throwing CaptureFailedException\n"); fflush(stdout);
         (*env)->ThrowNew(env, (*env)->FindClass(env, "uk/co/caprica/picam/CaptureFailedException"), "Arse");
-        printf("After Throwing CaptureFailedException\n"); fflush(stdout);
-    // JavaVM *jvm = JniContext.jvm;
-    // (*jvm)->DetachCurrentThread(jvm);
     }
 
     // FIXME even though this method returns, the exception does not arrive in the Java side until the fake sleep in the callback finishes - i.e. until the callback finishes execution, which in the error case it never will!
