@@ -17,8 +17,8 @@ Clone the source to a directory on your Pi.
 Execute the "pi.sh" command to produce a "picam.so" shared library that your Java picam application
 can then use.
 
-In the future, a pre-built library will likely be included in the picam distribution, but for now
-it is easy enough to build yourself.
+However, there is no real need to build the library yourself - a pre-built version is bundled with
+the picam-2.x distribution jar and this can be automatically extracted and loaded.
 
 TODO
 ----
