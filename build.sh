@@ -3,7 +3,7 @@
 #
 # You should NOT use this, see pi.sh instead
 #
-VERSION=2.0.0
+VERSION=2.0.1
 LIBRARY=picam-$VERSION.so
 JNI_INCLUDE=/usr/lib/jvm/default-java/include
 JNI_LIB=/usr/lib/jvm/default-java/lib

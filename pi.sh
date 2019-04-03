@@ -1,7 +1,7 @@
 #
 # Basic build script for building the shared library on the Pi
 #
-VERSION=2.0.0
+VERSION=2.0.1
 LIBRARY=picam-$VERSION.so
 JNI_INCLUDE=/usr/lib/jvm/java-9-openjdk-armhf/include
 JNI_LIB=/usr/lib/jvm/java-9-openjdk-armhf/lib
