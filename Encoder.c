@@ -160,10 +160,18 @@ static int sendBuffersToEncoder(PicamContext *context) {
     return 1;
 }
 
-// note it seems that this is called at least once before the capture is triggered, is that a bug?!
+/**
+ * Encoder buffer callback.
+ *
+ * Process the picture data supplied by the image encoder.
+ *
+ * Note that when cleaning up, this callback will be invoked with a buffer length of zero, and
+ * buffer flags of zero. The implemntation handles this scenario safely.
+ *
+ * @param port
+ * @param buffer
+ */
 static void encoderBufferCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer) {
-// printf("encoderBufferCallback\n"); fflush(stdout);
-
     bool finished = false;
     int written = 0;
 
@@ -194,7 +202,6 @@ static void encoderBufferCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffe
     }
 
     if (finished) {
-//        printf("finished, posting semaphore\n"); fflush(stdout);
         vcos_semaphore_post(&context->captureFinishedSemaphore);
     }
 }

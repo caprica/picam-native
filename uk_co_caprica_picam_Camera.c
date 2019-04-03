@@ -146,23 +146,13 @@ JNIEXPORT jboolean JNICALL Java_uk_co_caprica_picam_Camera_capture(JNIEnv *env, 
     bool captureSuccess = false;
 
     if (mmal_port_parameter_set_boolean(context.cameraComponent->output[MMAL_CAMERA_CAPTURE_PORT], MMAL_PARAMETER_CAPTURE, 1) == MMAL_SUCCESS) {
-        // printf("Waiting for completion semaphore\n");
-        // fflush(stdout);
-
         if (context.config.camera.captureTimeout > 0) {
-            // printf("Waiting for semaphore timed %d\n", context.config.camera.captureTimeout); fflush(stdout);
             // FIXME remember that note in Raspistill.c about this sometimes returning bad parameter, should pick that out and at least report/log differently so we can see
             captureSuccess = vcos_semaphore_wait_timeout(&context.captureFinishedSemaphore, context.config.camera.captureTimeout) == VCOS_SUCCESS;
         } else {
-            // printf("Waiting for untimed semaphore"); fflush(stdout);
             vcos_semaphore_wait(&context.captureFinishedSemaphore);
             captureSuccess = true;
         }
-
-        // printf("capture success was %d\n", captureSuccess); fflush(stdout);
-
-        // printf("Got completion semaphore\n"); fflush(stdout);
-        // fflush(stdout);
     }
 
     // PictureCaptureHandler#end():void
