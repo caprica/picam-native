@@ -122,7 +122,6 @@ error:
  */
 JNIEXPORT jboolean JNICALL Java_uk_co_caprica_picam_Camera_capture(JNIEnv *env, jobject obj, jobject handler, jint delay) {
     if (!handler) {
-        // FIXME capturefailedexception?
         (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/IllegalArgumentException"), "Handler must not be null");
         return false;
     }
@@ -147,8 +146,14 @@ JNIEXPORT jboolean JNICALL Java_uk_co_caprica_picam_Camera_capture(JNIEnv *env, 
 
     if (mmal_port_parameter_set_boolean(context.cameraComponent->output[MMAL_CAMERA_CAPTURE_PORT], MMAL_PARAMETER_CAPTURE, 1) == MMAL_SUCCESS) {
         if (context.config.camera.captureTimeout > 0) {
-            // FIXME remember that note in Raspistill.c about this sometimes returning bad parameter, should pick that out and at least report/log differently so we can see
-            captureSuccess = vcos_semaphore_wait_timeout(&context.captureFinishedSemaphore, context.config.camera.captureTimeout) == VCOS_SUCCESS;
+            VCOS_STATUS_T semaphoreResult = vcos_semaphore_wait_timeout(&context.captureFinishedSemaphore, context.config.camera.captureTimeout);
+            if (semaphoreResult == VCOS_SUCCESS) {
+                captureSuccess = true;
+            } else if (semaphoreResult == VCOS_EAGAIN) {
+                printf("Timed out waiting for capture semaphore\n"); fflush(stdout);
+            } else {
+                printf("General error waiting for capture semaphore\n"); fflush(stdout);
+            }
         } else {
             vcos_semaphore_wait(&context.captureFinishedSemaphore);
             captureSuccess = true;
@@ -162,14 +167,9 @@ JNIEXPORT jboolean JNICALL Java_uk_co_caprica_picam_Camera_capture(JNIEnv *env, 
         return false;
     }
 
-    // FIXME 1. exception is not being raised on Java side
-    //       2. we are not stopping the callback from running, so there's a potential race of the callback going back into pictureData after the timeout
     if (!captureSuccess) {
-        (*env)->ThrowNew(env, (*env)->FindClass(env, "uk/co/caprica/picam/CaptureFailedException"), "Arse");
+        (*env)->ThrowNew(env, (*env)->FindClass(env, "uk/co/caprica/picam/CaptureFailedException"), NULL);
     }
-
-    // FIXME even though this method returns, the exception does not arrive in the Java side until the fake sleep in the callback finishes - i.e. until the callback finishes execution, which in the error case it never will!
-    //         WTF is going on?
 
     return (jboolean) captureSuccess;
 }
