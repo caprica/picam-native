@@ -87,6 +87,14 @@ void destroyCamera(PicamContext *context) {
 // === Private implementation =====================================================================
 
 static void cameraControlCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer) {
+    printf("cameraControlCallback 0x%08x\n", buffer->cmd); fflush(stdout);
+
+    if (buffer->cmd == MMAL_EVENT_ERROR) {
+        printf("Error received in camera control callback\n"); fflush(stdout);
+    } else {
+        printf("Unexpected command in camera control callback 0x%08x\n", buffer->cmd); fflush(stdout);
+    }
+
     mmal_buffer_header_release(buffer);
 }
 
