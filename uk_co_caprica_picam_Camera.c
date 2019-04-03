@@ -170,7 +170,7 @@ JNIEXPORT jboolean JNICALL Java_uk_co_caprica_picam_Camera_capture(JNIEnv *env, 
         (*env)->ThrowNew(env, (*env)->FindClass(env, "uk/co/caprica/picam/CaptureFailedException"), captureFailure);
     }
 
-    return (jboolean) (captureFailure != NULL);
+    return (jboolean) (captureFailure == NULL);
 }
 
 /**
