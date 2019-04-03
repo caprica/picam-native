@@ -141,22 +141,21 @@ JNIEXPORT jboolean JNICALL Java_uk_co_caprica_picam_Camera_capture(JNIEnv *env, 
         return false;
     }
 
-    // FIXME probably i should just throw CaptureFailedException rather than have this method return a boolean
-    bool captureSuccess = false;
+    char *captureFailure;
 
     if (mmal_port_parameter_set_boolean(context.cameraComponent->output[MMAL_CAMERA_CAPTURE_PORT], MMAL_PARAMETER_CAPTURE, 1) == MMAL_SUCCESS) {
         if (context.config.camera.captureTimeout > 0) {
             VCOS_STATUS_T semaphoreResult = vcos_semaphore_wait_timeout(&context.captureFinishedSemaphore, context.config.camera.captureTimeout);
             if (semaphoreResult == VCOS_SUCCESS) {
-                captureSuccess = true;
+                captureFailure = NULL;
             } else if (semaphoreResult == VCOS_EAGAIN) {
-                printf("Timed out waiting for capture semaphore\n"); fflush(stdout);
+                captureFailure = "Timed-out waiting for capture finished semaphore";
             } else {
-                printf("General error waiting for capture semaphore\n"); fflush(stdout);
+                captureFailure = "General error waiting for capture finished semaphore";
             }
         } else {
             vcos_semaphore_wait(&context.captureFinishedSemaphore);
-            captureSuccess = true;
+            captureFailure = NULL;
         }
     }
 
@@ -167,11 +166,11 @@ JNIEXPORT jboolean JNICALL Java_uk_co_caprica_picam_Camera_capture(JNIEnv *env, 
         return false;
     }
 
-    if (!captureSuccess) {
-        (*env)->ThrowNew(env, (*env)->FindClass(env, "uk/co/caprica/picam/CaptureFailedException"), NULL);
+    if (captureFailure) {
+        (*env)->ThrowNew(env, (*env)->FindClass(env, "uk/co/caprica/picam/CaptureFailedException"), captureFailure);
     }
 
-    return (jboolean) captureSuccess;
+    return (jboolean) (captureFailure != NULL);
 }
 
 /**
