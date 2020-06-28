@@ -116,7 +116,7 @@ int setCrop(MMAL_PORT_T *port, double x, double y, double w, double h) {
 int setFpsRange(MMAL_PORT_T *port, uint32_t shutterSpeed) {
     MMAL_PARAMETER_FPS_RANGE_T param = {{MMAL_PARAMETER_FPS_RANGE, sizeof(param)}};
     if (shutterSpeed > 6000000) {
-        param.fps_low.num = 50;
+        param.fps_low.num = 5;
         param.fps_low.den = 1000;
         param.fps_high.num = 166;
         param.fps_high.den = 1000;
