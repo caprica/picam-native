@@ -3,8 +3,8 @@
 #
 VERSION=2.0.1
 LIBRARY=picam-$VERSION.so
-JNI_INCLUDE=/usr/lib/jvm/java-9-openjdk-armhf/include
-JNI_LIB=/usr/lib/jvm/java-9-openjdk-armhf/lib
+JNI_INCLUDE=$JAVA_HOME/include
+JNI_LIB=$JAVA_HOME/lib
 PI_INCLUDE=/opt/vc/include
 PI_LIB=/opt/vc/lib
 LDFLAGS="-lc -lmmal -lmmal_core -lmmal_util"
